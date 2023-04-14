@@ -36,7 +36,7 @@ class ResNet(nn.Module):
             raise Exception("num_blocks parameter is not a  a list of integer values")
         if num_layers != len(num_blocks):
             raise Exception("Residual layers not equal to the length of num_blocks list")
-        
+
         super(ResNet, self).__init__()
         self.kernel = kernel
         self.skip_kernel = skip_kernel
@@ -50,7 +50,7 @@ class ResNet(nn.Module):
         self.layer1 = self._create_layer(block, self.in_planes, num_blocks[0], stride=1, bias=bias)
         for i in range(2, num_layers+1):
             setattr(self, "layer"+str(i), self._create_layer(block, 2*self.in_planes, num_blocks[i-1], stride=2, bias=bias))
-        
+
         finalshape = list(getattr(self, "layer"+str(num_layers))[-1].modules())[-2].num_features
         self.multiplier = 4 if num_layers == 2 else (2 if num_layers == 3 else 1)
         self.linear = nn.Linear(finalshape, num_classes)
